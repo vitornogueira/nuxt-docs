@@ -9,12 +9,12 @@ description: Nuxt.js lets you customize the webpack configuration for building y
 
 ## analyze
 
-> Nuxt.js use [webpack-bundle-analyzer](https://github.com/th0r/webpack-bundle-analyzer) to let you visualize your bundles and how to optimize them.
+> Nuxt.js use [webpack-bundle-analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer) to let you visualize your bundles and how to optimize them.
 
 - Type: `Boolean` or `Object`
 - Default: `false`
 
-If an object, see available properties [here](https://github.com/th0r/webpack-bundle-analyzer#as-plugin).
+If an object, see available properties [here](https://github.com/webpack-contrib/webpack-bundle-analyzer#options-for-plugin).
 
 Example (`nuxt.config.js`):
 
@@ -79,7 +79,7 @@ See [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) 
 The extend is called twice, one time for the server bundle, and one time for the client bundle. The arguments of the method are:
 
 1. webpack config object,
-2. object with the following keys (all boolean): `dev`, `isClient`, `isServer`.
+2. object with the following keys (all boolean): `isDev`, `isClient`, `isServer`.
 
 Example (`nuxt.config.js`):
 
@@ -96,7 +96,7 @@ module.exports = {
 }
 ```
 
-If you want to see more about our default webpack configuration, take a look at our [webpack directory](https://github.com/nuxt/nuxt.js/tree/master/lib/webpack).
+If you want to see more about our default webpack configuration, take a look at our [webpack directory](https://github.com/nuxt/nuxt.js/tree/master/lib/builder/webpack).
 
 ## extractCSS
 
@@ -171,7 +171,7 @@ module.exports = {
 
 > Customize [PostCSS Loader](https://github.com/postcss/postcss-loader#usage) plugins.
 
-- Type: `Array`, `Object` (recommended), `Function` ou `Boolean`
+- Type: `Array`, `Object` (recommended), `Function` or `Boolean`
 
   **Note:** While default preset is OK and flexible enough for normal use cases, the recommended usage by [`vue-loader`](https://vue-loader.vuejs.org/en/options.html#postcss) is using `postcss.config.js` file in your project. By creating that file it will be automatically detected and this option is ignored.
 
@@ -180,7 +180,7 @@ module.exports = {
   ```js
   {
     plugins: {
-    'postcss-import' : {},
+    'postcss-import': {},
     'postcss-url': {},
     'postcss-cssnext': {}
     }
@@ -195,7 +195,7 @@ module.exports = {
     postcss: {
       plugins: {
         // Disable `postcss-url`
-      'postcss-url': false
+      'postcss-url': false,
 
       // Customize `postcss-cssnext` default options
       'postcss-cssnext': {
@@ -206,7 +206,7 @@ module.exports = {
 
       // Add some plugins
       'postcss-nested': {},
-      'postcss-responsive-type': {}
+      'postcss-responsive-type': {},
       'postcss-hexrgba': {}
       }
     }
@@ -253,15 +253,15 @@ Example (`nuxt.config.js`):
 ```js
 module.exports = {
   build: {
-      templates: [
-         {
-           src: '~/modules/support/plugin.js', // `src` can be absolute or relative
-           dst: 'support.js', // `dst` is relative to project `.nuxt` dir
-           options: { // Options are provided to template as `options` key
-               live_chat: false
-           }
-         }
-      ]
+    templates: [
+      {
+        src: '~/modules/support/plugin.js', // `src` can be absolute or relative
+        dst: 'support.js', // `dst` is relative to project `.nuxt` dir
+        options: { // Options are provided to template as `options` key
+          live_chat: false
+        }
+      }
+    ]
   }
 }
 ```
@@ -306,9 +306,9 @@ module.exports = {
 ```js
 module.exports = {
   build: {
-      watch: [
-          '~/.nuxt/support.js'
-      ]
+    watch: [
+      '~/.nuxt/support.js'
+    ]
   }
 }
 ```

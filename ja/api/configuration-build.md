@@ -34,11 +34,10 @@ module.exports = {
 
 ## babel
 
-- タイプ: `オブジェクト`
-
 > JS や Vue ファイルのために babel の設定をカスタマイズします。
 
-デフォルト:
+- タイプ: `オブジェクト`
+- デフォルト:
 
 ```js
 {
@@ -60,27 +59,27 @@ module.exports = {
 
 ## cssSourceMap
 
-- Type: `boolean`
-  - Default: `true` for dev and `false` for production.
+- タイプ: `ブーリアン`
+- デフォルト: 開発モードでは `true` でプロダクションモードでは `false`
 
 > Enables CSS Source Map support
 
 ## devMiddleware
 
-- Type: `Object`
+- タイプ: `オブジェクト`
 
-See [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) for available options.
+利用できるオプションは [webpack-dev-middleware](https://github.com/webpack/webpack-dev-middleware) を参照してください。
 
 ## extend
 
-- タイプ: `関数`
-
 > クライアント及びサーバーのバンドルについて Webpack の設定を手動で拡張します。
+
+- タイプ: `関数`
 
 extend メソッドは一度はサーバーのバンドルのため、一度はクライアントのバンドルのため、つまり二度呼び出されます。メソッドの引数は次のとおり:
 
 1. Webpack 設定オブジェクト
-2. 次のキーを持つオブジェクト（すべてブーリアン）: `dev`, `isClient`, `isServer`
+2. 次のキーを持つオブジェクト（すべてブーリアン）: `isDev`, `isClient`, `isServer`
 
 例（`nuxt.config.js`）:
 
@@ -97,43 +96,41 @@ module.exports = {
 }
 ```
 
-デフォルトの Webpack の設定についてもう少し見てみたい場合は Nuxt.js の [webpack ディレクトリ](https://github.com/nuxt/nuxt.js/tree/master/lib/webpack) を参照してください。
+デフォルトの Webpack の設定についてもう少し見てみたい場合は Nuxt.js の [webpack ディレクトリ](https://github.com/nuxt/nuxt.js/tree/master/lib/builder/webpack) を参照してください。
 
 ## extractCSS
 
-- Type: `Boolean`
-  - Default: `false`
+> Vue のサーバーサイドレンダリングを利用して、共通の CSS を抽出できるようにします [guidelines](https://ssr.vuejs.org/en/css.html)
 
-> Enables Common CSS Extraction using vue SSR [guidelines](https://ssr.vuejs.org/en/css.html).
+- タイプ: `ブーリアン`
+- デフォルト: `false`
 
-Using extract-text-webpack-plugin to extract the CSS in the main chunk into a separate CSS file (auto injected with template),
-which allows the file to be individually cached. This is recommended when there is a lot of shared CSS.
-CSS inside async components will remain inlined as JavaScript strings and handled by vue-style-loader.
+CSS を抽出して、メインのチャンクに独立した CSS ファイルを挿入する（自動的にテンプレートに注入される）ために、ファイルを個別にキャッシュさせることができる `extract-text-webpack-plugin` を使います。これは共通して利用される CSS が多く存在するときに推奨されます。非同期コンポーネントの内部の CSS は JavaScript の文字列としてインラインで保持され、vue-style-loader で取り扱われます。
 
 ## filenames
 
-- タイプ: `オブジェクト`
-
 > バンドルのファイル名をカスタマイズします。
 
-デフォルト:
+- タイプ: `オブジェクト`
+- デフォルト:
 
 ```js
 {
-  vendor: 'vendor.bundle.[hash].js',
-  app: 'nuxt.bundle.[chunkhash].js'
+  css: 'common.[contenthash].css',
+  manifest: 'manifest.[hash].js',
+  vendor: 'common.[chunkhash].js',
+  app: 'app.[chunkhash].js',
+  chunk: '[name].[chunkhash].js'
 }
 ```
 
-例（`nuxt.config.js`）:
+この例ではチャンク名を数値の ID に変更します（`nuxt.config.js`）:
 
 ```js
 module.exports = {
   build: {
     filenames: {
-      manifest: 'manifest.[hash].js',
-      vendor: 'vendor.[hash].js',
-      app: 'app.[chunkhash].js'
+      chunk: '[id].[chunkhash].js'
     }
   }
 }
@@ -143,16 +140,16 @@ manifest や vendor についての利用についてより深く理解するに
 
 ## hotMiddleware
 
-- Type: `Object`
+- タイプ: `オブジェクト`
 
-See [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) for available options.
+利用可能なオプションは [webpack-hot-middleware](https://github.com/glenjamin/webpack-hot-middleware) を参照してください。
 
 ## plugins
 
+> Webpack のプラグインを追加します。
+
 - タイプ: `配列`
 - デフォルト: `[]`
-
-> Webpack のプラグインを追加します。
 
 例（`nuxt.config.js`）:
 
@@ -172,22 +169,22 @@ module.exports = {
 
 ## postcss
 
-- タイプ: `配列`
+> [PostCSS Loader](https://github.com/postcss/postcss-loader#usage) プラグインをカスタマイズします。
 
-> [postcss](https://github.com/postcss/postcss) オプションをカスタマイズします。
+- タイプ: `配列`、`オブジェクト`（推奨）、`関数` または `ブーリアン`
 
-**NOTE:** While default preset is OK and flexible enough for normal use cases, the recommended 
-usage by [vue-loader](https://vue-loader.vuejs.org/en/options.html#postcss) is using `postcss.config.js` file in your project.
-By creating that file it will be automatically detected and this option is ignored.
+**Note:** While default preset is OK and flexible enough for normal use cases, the recommended usage by [`vue-loader`](https://vue-loader.vuejs.org/en/options.html#postcss) is using `postcss.config.js` file in your project. By creating that file it will be automatically detected and this option is ignored.
 
-デフォルト:
+- デフォルト:
 
 ```js
-[
-  require('autoprefixer')({
-    browsers: ['last 3 versions']
-  })
-]
+{
+  plugins: {
+  'postcss-import': {},
+  'postcss-url': {},
+  'postcss-cssnext': {}
+  }
+}
 ```
 
 例（`nuxt.config.js`）:
@@ -195,24 +192,34 @@ By creating that file it will be automatically detected and this option is ignor
 ```js
 module.exports = {
   build: {
-    postcss: [
-      require('postcss-nested')(),
-      require('postcss-responsive-type')(),
-      require('postcss-hexrgba')(),
-      require('autoprefixer')({
-        browsers: ['last 3 versions']
-      })
-    ]
+    postcss: {
+      plugins: {
+        // Disable `postcss-url`
+      'postcss-url': false,
+
+      // Customize `postcss-cssnext` default options
+      'postcss-cssnext': {
+        features: {
+          customProperties: false
+        }
+      }
+
+      // Add some plugins
+      'postcss-nested': {},
+      'postcss-responsive-type': {},
+      'postcss-hexrgba': {}
+      }
+    }
   }
 }
 ```
 
 ## publicPath
 
+> 最高のパフォーマンスを発揮させるために dist ディレクトリ内のファイルを CDN へアップロードできます。そのためには単に `publicPath` に利用する CDN をセットするだけです。
+
 - タイプ: `文字列`
 - デフォルト: `'/_nuxt/'`
-
-> 最高のパフォーマンスを発揮させるために dist ディレクトリ内のファイルを CDN へアップロードできます。そのためには単に `publicPath` に利用する CDN をセットするだけです。
 
 例（`nuxt.config.js`）:
 
@@ -228,48 +235,45 @@ module.exports = {
 
 ## ssr
 
-- Type: `Boolean`
-  - Default `true` for universal mode and `false` for spa mode
-
 > Creates special webpack bundle for SSR renderer.
+
+- Type: `Boolean`
+- Default `true` for universal mode and `false` for spa mode
 
 This option is automatically set based on `mode` value if not provided. 
 
 ## templates
 
-- Type: `Array`
- - Items: `Object`
+> Nuxt.js allows you provide your own templates which will be rendered based on Nuxt configuration. This feature is specially useful for using with [modules](/guide/modules).
 
-> Nuxt.js allows you provide your own templates which will be rendered based on nuxt configuration
-  This feature is specially useful for using with [modules](/guide/modules).
+- Type: `Array`
+- Items: `Object`
 
 Example (`nuxt.config.js`):
 
 ```js
 module.exports = {
   build: {
-      templates: [
-         {
-           src: '~/modules/support/plugin.js', // src can be absolute or relative
-           dst: 'support.js', // dst is relative to project `.nuxt` dir
-           options: { // Options are provided to template as `options` key
-               live_chat: false
-           }
-         }
-      ]
+    templates: [
+      {
+        src: '~/modules/support/plugin.js', // `src` can be absolute or relative
+        dst: 'support.js', // `dst` is relative to project `.nuxt` dir
+        options: { // Options are provided to template as `options` key
+          live_chat: false
+        }
+      }
+    ]
   }
 }
 ```
 
-Templates are rendered using [lodash.template](https://lodash.com/docs/#template) 
-you can learn more about using them [here](https://github.com/learn-co-students/javascript-lodash-templates-v-000).
+Templates are rendered using [`lodash.template`](https://lodash.com/docs/#template) you can learn more about using them [here](https://github.com/learn-co-students/javascript-lodash-templates-v-000).
 
 ## vendor
 
 > Nuxt.js では `vendor.bundle.js` ファイル内にモジュールを追加できます。このファイルは app バンドルファイルのサイズを小さくするために生成します。外部モジュール（例えば `axios` など）を使うときにとても便利です。
 
 - タイプ: `配列`
-  - 要素: `文字列`
 
 vendor バンドルファイル内にモジュール/ファイルを追加するには、`nuxt.config.js` 内の `build.vendor` キーに追加します:
 
@@ -296,18 +300,16 @@ module.exports = {
 
 ## watch
 
-- Type: `Array`
- - Items: `String`
+> You can provide your custom files to watch and regenerate after changes. This feature is specially useful for using with [modules](/guide/modules).
 
-> You can provide your custom files to watch and regenerate after changes.
-  This feature is specially useful for using with [modules](/guide/modules).
+- Type: `Array<String>`
 
 ```js
 module.exports = {
   build: {
-      watch: [
-          '~/.nuxt/support.js'
-      ]
+    watch: [
+      '~/.nuxt/support.js'
+    ]
   }
 }
 ```

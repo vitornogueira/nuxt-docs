@@ -79,7 +79,7 @@ Not all modules will do everything synchronous. For example you may want to deve
 
 ### Use async/await
 
-<p class="Alert Alert--orange">Be aware that `async`/`await` is only supported in Node.js > 7.2. So if you are a module developer at least warn users about that if using them. For heavily async modules or better legacy support you can use either a bundler to transform it for older Node.js compatibility or using promise method.</p>
+<p class="Alert Alert--orange">Be aware that `async`/`await` is only supported in Node.js > 7.2. So if you are a module developer at least warn users about that if using them. For heavily async modules or better legacy support you can use either a bundler to transform it for older Node.js compatibility or a promise method.</p>
 
 ```js
 const fse = require('fs-extra')
@@ -211,7 +211,7 @@ module.exports = function nuxtBootstrapVue (moduleOptions) {
 
 ### Add a CSS library
 
-It is recommended checking if user already not provided same library to avoid adding duplicates. Also always consider having **an option to disable** adding css files by module.
+Consider doing a check if a CSS library exists to avoid duplicates and add **an option to disable** the CSS libray in the module. See the example shown below.
 
 **module.js**
 
@@ -279,27 +279,27 @@ Your module may need to do things only on specific conditions not just during Nu
 ```js
 module.exports = function () {
   // Add hook for modules
-  this.nuxt.plugin('module', moduleContainer => {
+  this.nuxt.hook('module', moduleContainer => {
     // This will be called when all modules finished loading
   })
 
   // Add hook for renderer
-  this.nuxt.plugin('renderer', renderer => {
+  this.nuxt.hook('renderer', renderer => {
     // This will be called when renderer was created
   })
 
   // Add hook for build
-  this.nuxt.plugin('build', async builder => {
+  this.nuxt.hook('build', async builder => {
     // This will be called once when builder created
 
     // We can even register internal hooks here
-    builder.plugin('compile', ({compiler}) => {
+    builder.hook('compile', ({compiler}) => {
         // This will be run just before webpack compiler starts
     })
   })
 
   // Add hook for generate
-  this.nuxt.plugin('generate', async generator => {
+  this.nuxt.hook('generate', async generator => {
     // This will be called when a Nuxt generate starts
   })
 }
